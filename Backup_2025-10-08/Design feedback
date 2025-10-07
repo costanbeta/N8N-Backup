@@ -1,0 +1,379 @@
+{
+  "createdAt": "2025-10-05T11:32:36.734Z",
+  "updatedAt": "2025-10-07T15:14:15.000Z",
+  "id": "bfThQOBInFWyJsA6",
+  "name": "Design feedback",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        128,
+        368
+      ],
+      "id": "811594f7-313f-4282-8c7e-321e44138098",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://mcp.figma.com/mcp",
+        "authentication": "bearerAuth",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        192
+      ],
+      "id": "3590a72b-077c-4ffe-a004-0835d0736895",
+      "name": "MCP Client",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "AVHKWOT2Eodz9bfl",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -32
+      ],
+      "id": "421608db-a474-4b12-b2c1-f57439c568a2",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Check for accessibility issues",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an AI assistant with expertise in web and application accessibility, conforming to the Web Content Accessibility Guidelines (WCAG). Your role is to conduct a thorough accessibility audit of the provided Figma design.\n\nPlease structure your feedback into the following categories and provide actionable recommendations for each issue you identify:\n\n1.  **Color and Contrast:**\n    *   Evaluate text and background color combinations against WCAG AA and AAA contrast ratio standards (4.5:1 for normal text).\n    *   Identify any instances where color is used as the sole means of conveying information.\n\n2.  **Typography and Readability:**\n    *   Assess the legibility of font choices and sizes.\n    *   Check for adequate line spacing and text block width for readability.\n\n3.  **Interactive Elements and Controls:**\n    *   Examine buttons, links, and form fields to ensure they are clearly identifiable and that their touch targets are sufficiently large (at least 44x44 pixels).\n    *   Check for clear and consistent visual cues for different states (hover, focus, active).\n\n4.  **Content and Structure:**\n    *   Review the heading structure for logical hierarchy (H1, H2, H3, etc.).\n    *   If applicable, suggest improvements for clear and concise microcopy and alt text for images.\n\n5.  **Layout and Navigation:**\n    *   Assess the clarity and consistency of the overall layout.\n    *   Consider the logical flow for users who would navigate via a keyboard.\n\nFor each issue, please describe the problem, explain why it is an accessibility barrier, and suggest a specific solution."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        -32
+      ],
+      "id": "b37d210d-d418-456c-a9cb-f6f2fcf15958",
+      "name": "Feedback AI",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        208
+      ],
+      "id": "eda99477-1eb8-4d1f-ac6b-c60903fe699b",
+      "name": "Structured Output Parser",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "url": "https://api.figma.com/v1/files/DCtpcmyD1bqIbL84ovghtg",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1728,
+        80
+      ],
+      "id": "b4f3b0c1-3da2-4ab8-9c00-8a89c6e91411",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HoxlGAmaekzFTDCv",
+          "name": "Header Auth account 2"
+        },
+        "httpBearerAuth": {
+          "id": "AVHKWOT2Eodz9bfl",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        880
+      ],
+      "id": "3ef51ee2-ca08-479c-ab96-31880ba774eb",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        1536,
+        464
+      ],
+      "id": "abd8a644-94cf-4262-8e14-0455dd096901",
+      "name": "Form",
+      "webhookId": "ae3bde6e-eee9-4fdf-9a64-d9a8ebcf3eb7"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        1760,
+        464
+      ],
+      "id": "268a5a10-d9d9-4373-8040-d4c68e24e0e2",
+      "name": "Simple Vector Store1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        2032,
+        768
+      ],
+      "id": "e7a3499d-c556-4b13-9b53-a49aab3429d5",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "formTitle": "AI Agent for Design feedback",
+        "formDescription": "Fill required information for feedback. Once complete the form check comment on figma",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Feature Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "File ID",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "097bb69c-b93c-4268-ba57-fb99afb8e79d",
+      "name": "On form submission",
+      "webhookId": "6fc62d1e-ac45-4cef-9dea-0a984ff33173"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        0
+      ],
+      "id": "072b5008-799e-494f-b8c7-31f0b44bf35d",
+      "name": "When chat message received",
+      "webhookId": "13021fe0-0d30-45b8-95ce-e901f6aedf3f"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        176
+      ],
+      "id": "b6e65b12-e72b-4c59-ad2c-0e8e690e5577",
+      "name": "Simple Memory"
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Feedback AI",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "Feedback AI",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Feedback AI": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Feedback AI",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        []
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Simple Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form": {
+      "main": [
+        [
+          {
+            "node": "Simple Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Simple Vector Store1",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        []
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Feedback AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Feedback AI",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "fc2d7d33-6559-4dd0-83c5-8fab09a41b8b",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-05T11:32:36.736Z",
+      "updatedAt": "2025-10-05T11:32:36.736Z",
+      "role": "workflow:owner",
+      "workflowId": "bfThQOBInFWyJsA6",
+      "projectId": "GOCt3JGfQ1Lags9f"
+    }
+  ],
+  "tags": []
+}
