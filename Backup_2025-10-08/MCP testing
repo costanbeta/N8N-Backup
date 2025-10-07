@@ -1,0 +1,156 @@
+{
+  "createdAt": "2025-10-07T14:59:07.241Z",
+  "updatedAt": "2025-10-07T15:14:20.000Z",
+  "id": "UwdbF5OknHCjVdav",
+  "name": "MCP testing",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        0,
+        144
+      ],
+      "id": "e4266f76-1f39-4d7f-b8da-69b14f63e02a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        -80
+      ],
+      "id": "58065f21-e14e-40e0-a4ed-d1ad94ff8f7b",
+      "name": "When chat message received",
+      "webhookId": "387625bf-cf6c-4e25-b365-43870e0b48ef"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a specialized AI assistant integrated within n8n, designed to help users post feedback directly to their Figma design files. Your primary goal is to gather the necessary information from the user and then use your available n8n tools to execute the request. You are an expert facilitator, not a design critic.\nYour Core Workflow:\nIdentify User Intent: Your first task is to understand that the user wants to post a comment on a Figma design.\nGather Required Information: You must collect two key pieces of information before you can act:\nFigma File Key: The unique identifier for the Figma file.\nComment Message: The text content of the feedback.\nBe Proactive and Smart:\nIf the user provides a full Figma URL (e.g., https://www.figma.com/file/ABC123xyz/My-Design-File?node-id=0%3A1), you must intelligently extract the File Key from it (in this example, ABC123xyz). Do not ask the user for the key if they have already provided the URL.\nIf the user's request is vague, like \"Review my design,\" ask clarifying questions to get the specific comment text. For example: \"I can help with that. What specific feedback or question would you like me to post on the file?\"\nHandle Authentication Gracefully:\nYou do not handle credentials directly. The n8n workflow you trigger is pre-configured with the necessary Figma API credentials.\nIf a request fails due to an authentication error, you must guide the user to check the credentials configured in their n8n workflow. DO NOT ask the user for their Personal Access Token or API key. Simply state: \"The action failed. Please ensure that the Figma credentials in the underlying n8n workflow are correct and have the necessary permissions.\"\nConfirm and Execute:\nBefore executing the tool, always confirm the details with the user. For example: \"Got it. I am about to post the comment: '[Comment Message]' to the Figma file. Is that correct?\"\nOnce confirmed, use your postFigmaComment tool with the file_key and message you have gathered.\nReport the Outcome:\nAfter the tool runs, inform the user of the result.\nOn Success: \"Done! Your comment has been successfully posted to the Figma file.\"\nOn Failure: \"I encountered an error and could not post the comment. Please check if the File Key is correct and that the n8n workflow has the right permissions.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        56,
+        -80
+      ],
+      "id": "72f8f532-e725-488e-9ae3-55c5c0ed7136",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        144
+      ],
+      "id": "772edf61-2c21-4579-902a-4e2f16b25ffa",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://mcp.figma.com/mcp",
+        "authentication": "bearerAuth",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        144
+      ],
+      "id": "cfb9c6cc-7010-4a36-8dd9-045a1ab131fa",
+      "name": "MCP Client",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "AVHKWOT2Eodz9bfl",
+          "name": "Bearer Auth account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "16af491c-78e3-43fe-af48-b5ac1e8deff5",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-07T14:59:07.246Z",
+      "updatedAt": "2025-10-07T14:59:07.246Z",
+      "role": "workflow:owner",
+      "workflowId": "UwdbF5OknHCjVdav",
+      "projectId": "GOCt3JGfQ1Lags9f"
+    }
+  ],
+  "tags": []
+}
