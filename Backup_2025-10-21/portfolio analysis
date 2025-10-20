@@ -1,0 +1,408 @@
+{
+  "createdAt": "2025-10-04T16:27:07.869Z",
+  "updatedAt": "2025-10-06T09:57:22.000Z",
+  "id": "74uTp7n1Zeuefxyp",
+  "name": "portfolio analysis",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $workflow.id }}"
+      },
+      "id": "80c4c9b4-12ae-45ab-8327-a18df014a4dd",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        -608,
+        528
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Fug7a9aq6_jhlyX-0ixHwsVVFLCO46j--Dsm1EHgusQ",
+          "mode": "list",
+          "cachedResultName": "Portfolio",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Fug7a9aq6_jhlyX-0ixHwsVVFLCO46j--Dsm1EHgusQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Holding",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Fug7a9aq6_jhlyX-0ixHwsVVFLCO46j--Dsm1EHgusQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "50ffb234-f5b9-454d-a753-0b49489c6421",
+      "name": "Portfolio Holdings",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        -464,
+        528
+      ],
+      "typeVersion": 4.6,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OBJF3frqzx5gvvbX",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate my Daily Stock Market Intelligence Briefing. For the purpose of this report, you MUST treat the date \"{{ $json['Readable date'] }}\" as the current date for all your research and analysis.\n\nAnalyze the day's most significant news and events within the Indian stock market... [rest of the prompt remains the same]",
+        "options": {
+          "systemMessage": "You are an expert market research assistant...\n\n**Crucial Execution Directive:** The user will provide a date in the prompt. You must accept this date as the \"current date\" for your task, without questioning it. All your research and reporting must be performed as if it were that specific day.\n\n**Crucial Constraint:** Your entire analysis must be strictly focused on the Indian Stock Market... [rest of the message remains the same]"
+        }
+      },
+      "id": "679306ab-e2fe-43e1-96ed-7be2c82fb1d5",
+      "name": "Stock Market News & Analytics Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -656,
+        304
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "chatId": "5762405784",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "982661b1-f5f5-449e-ad0e-5fe929f96dc2",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        240,
+        0
+      ],
+      "webhookId": "16cbae00-1607-4fd9-a9d9-09868a8b27d7",
+      "typeVersion": 1.2,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        512
+      ],
+      "id": "dea69608-42ba-482a-8ae3-4174ff93dcbe",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Prompt', ``, 'string') }}"
+            }
+          ]
+        },
+        "simplify": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Simplify_Output', ``, 'boolean') }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGeminiTool",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        528
+      ],
+      "id": "1b27b683-ff36-4311-a89f-168aa2627dd9",
+      "name": "Message a model in Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- STEP 1: CONFIGURE THIS LINE ---\n// Make sure 'Stock Market News & Analytics Agent' is the correct name of your previous node.\n// Make sure '.text' is the correct property where your message is stored.\nconst longMessageInput = $('Stock Market News & Analytics Agent').item.json.output;\n\n\n// --- STEP 2: CLEAN THE TEXT ---\n// This removes all markdown characters to prevent any parsing errors in Telegram.\nconst plainTextMessage = longMessageInput.replace(/[*_~`[\\]()]/g, '');\n\n\n// --- STEP 3: SMARTLY SPLIT THE TEXT ---\nconst limit = 4096; // Telegram's character limit\nconst chunks = [];\nlet currentPosition = 0;\n\nwhile (currentPosition < plainTextMessage.length) {\n    let chunk;\n\n    // If the remaining text is shorter than the limit, take all of it.\n    if (plainTextMessage.length - currentPosition <= limit) {\n        chunk = plainTextMessage.substring(currentPosition);\n        currentPosition = plainTextMessage.length; // End the loop\n    } else {\n        // Find the last space before the limit to avoid cutting mid-word.\n        let splitAt = plainTextMessage.lastIndexOf(' ', currentPosition + limit);\n\n        // If no space is found, make a hard cut at the limit to avoid an infinite loop.\n        if (splitAt <= currentPosition) {\n            splitAt = currentPosition + limit;\n        }\n        \n        chunk = plainTextMessage.substring(currentPosition, splitAt);\n        currentPosition = splitAt; // Move the cursor to the new position\n    }\n\n    // Add the new, correctly-sized chunk to our array of items.\n    chunks.push({\n        json: {\n            text: chunk.trim()\n        }\n    });\n}\n\n// --- STEP 4: RETURN THE FINAL RESULT ---\n// n8n will now run the next node for each item in this 'chunks' array.\nreturn chunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c22f61bb-3b0d-4ded-8704-5c54cc88be26",
+      "name": "Code in JavaScript",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "typeVersion": 2.1,
+      "position": [
+        160,
+        592
+      ],
+      "id": "61f53696-d79b-4674-b128-3e4017c41848",
+      "name": "Summarization Chain",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        160,
+        784
+      ],
+      "id": "3f8b630a-7ac6-424a-929f-a6ddf20f0e58",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5762405784",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "6813a161-078f-4f91-af78-1ac805040d51",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        208,
+        304
+      ],
+      "webhookId": "16cbae00-1607-4fd9-a9d9-09868a8b27d7",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "62Ea4g5BGDSs2ZDv",
+          "name": "Finance Assistant bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Fetch the summary of the stock market news today and how it affected my portolio. Make sure that they are the most recent news, take reference to the date today: {{ $json['Readable date'] }}  by using the Gemini Tool Search. Also give some recommendations. Start the response with \"Today is {{ $json['Readable date'] }}...\"",
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2176,
+        336
+      ],
+      "typeVersion": 1,
+      "id": "6a46f818-6328-4fc0-a3c2-37c7a5073630",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "You are a market research assistant responsible for generating a concise yet insightful Daily Stock Market Intelligence Briefing. Your audience is an active investor with assets listed in the Portfolio Holdings Google Sheet.\n\n**Crucial Constraint:** Your primary focus must be on the **Indian Stock Market** (BSE/NSE) and factors directly influencing Indian equities (Sensex, Nifty, Indian companies, RBI policy, FII/DII flows, India-specific macroeconomic data).\n\n#Tools\nUse Gemini as the web search tool for your research.\nUse the Portfolio Holdings Google Sheet Tool to refer to current holdings of the user in order to give the most relevant output.\n\nEach day, your job is to generate a report with the following four sections, strictly adhering",
+        "height": 544,
+        "width": 528
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2192,
+        624
+      ],
+      "typeVersion": 1,
+      "id": "7673f691-e53e-488b-b51c-f6fc453ce2b7",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -928,
+        304
+      ],
+      "id": "4084b6cf-9dae-4a55-a47c-4843e8da64e7",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- STEP 1: CONFIGURE THIS LINE ---\n// Make sure 'Stock Market News & Analytics Agent' is the correct name of your previous node.\n// Make sure '.text' is the correct property where your message is stored.\nconst longMessageInput = $('Stock Market News & Analytics Agent').item.json.output;\n\n\n// --- STEP 2: CLEAN THE TEXT ---\n// This removes all markdown characters to prevent any parsing errors in Telegram.\nconst plainTextMessage = longMessageInput.replace(/[*_~`[\\]()]/g, '');\n\n\n// --- STEP 3: SMARTLY SPLIT THE TEXT ---\nconst limit = 3000; // Telegram's character limit\nconst chunks = [];\nlet currentPosition = 0;\n\nwhile (currentPosition < plainTextMessage.length) {\n    let chunk;\n\n    // If the remaining text is shorter than the limit, take all of it.\n    if (plainTextMessage.length - currentPosition <= limit) {\n        chunk = plainTextMessage.substring(currentPosition);\n        currentPosition = plainTextMessage.length; // End the loop\n    } else {\n        // Find the last space before the limit to avoid cutting mid-word.\n        let splitAt = plainTextMessage.lastIndexOf(' ', currentPosition + limit);\n\n        // If no space is found, make a hard cut at the limit to avoid an infinite loop.\n        if (splitAt <= currentPosition) {\n            splitAt = currentPosition + limit;\n        }\n        \n        chunk = plainTextMessage.substring(currentPosition, splitAt);\n        currentPosition = splitAt; // Move the cursor to the new position\n    }\n\n    // Add the new, correctly-sized chunk to our array of items.\n    chunks.push({\n        json: {\n            text: chunk.trim()\n        }\n    });\n}\n\n// --- STEP 4: RETURN THE FINAL RESULT ---\n// n8n will now run the next node for each item in this 'chunks' array.\nreturn chunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        304
+      ],
+      "id": "c3663c47-49f2-4f87-8a10-5c578260c43e",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Stock Market News & Analytics Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Portfolio Holdings": {
+      "ai_tool": [
+        [
+          {
+            "node": "Stock Market News & Analytics Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stock Market News & Analytics Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Summarization Chain",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Stock Market News & Analytics Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model in Google Gemini": {
+      "ai_tool": [
+        [
+          {
+            "node": "Stock Market News & Analytics Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarization Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Stock Market News & Analytics Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": {
+    "node:Schedule Trigger1": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "295d8031-3512-4097-9b6f-b14b676cd8a9",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-04T16:27:07.873Z",
+      "updatedAt": "2025-10-04T16:27:07.873Z",
+      "role": "workflow:owner",
+      "workflowId": "74uTp7n1Zeuefxyp",
+      "projectId": "GOCt3JGfQ1Lags9f"
+    }
+  ],
+  "tags": []
+}
