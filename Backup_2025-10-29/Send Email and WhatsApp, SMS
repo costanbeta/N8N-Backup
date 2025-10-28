@@ -1,0 +1,53 @@
+{
+  "createdAt": "2025-10-05T10:45:26.604Z",
+  "updatedAt": "2025-10-05T10:47:28.000Z",
+  "id": "1AusFNPV8vMTcGku",
+  "name": "Send Email and WhatsApp, SMS",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "5fcd4079-0c4c-44d6-a711-521dc9289ee0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        208
+      ],
+      "id": "e301a312-ca79-4f29-a762-f4fadd3e721c",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "66e28db6-186e-40c8-8d16-86b60853f7e1",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-05T10:45:26.611Z",
+      "updatedAt": "2025-10-05T10:45:26.611Z",
+      "role": "workflow:owner",
+      "workflowId": "1AusFNPV8vMTcGku",
+      "projectId": "GOCt3JGfQ1Lags9f"
+    }
+  ],
+  "tags": []
+}
