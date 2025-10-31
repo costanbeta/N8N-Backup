@@ -1,0 +1,549 @@
+{
+  "createdAt": "2025-10-07T14:59:07.241Z",
+  "updatedAt": "2025-10-29T18:11:52.000Z",
+  "id": "UwdbF5OknHCjVdav",
+  "name": "Explore",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        0,
+        144
+      ],
+      "id": "e4266f76-1f39-4d7f-b8da-69b14f63e02a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -144,
+        -80
+      ],
+      "id": "58065f21-e14e-40e0-a4ed-d1ad94ff8f7b",
+      "name": "When chat message received",
+      "webhookId": "387625bf-cf6c-4e25-b365-43870e0b48ef"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "you are assistant help get feedback on figma design "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "72f8f532-e725-488e-9ae3-55c5c0ed7136",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        144
+      ],
+      "id": "772edf61-2c21-4579-902a-4e2f16b25ffa",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"list_pages\",\n  \"id\": 2,\n  \"params\": {\n    \"file_key\": \"DCtpcmyD1bqlbL84ovghtg\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1968,
+        368
+      ],
+      "id": "5035cde0-e356-4c1a-bdbf-f37ed4cf8760",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xRBuhsz4bSR8FdRv",
+          "name": "X-Figma-Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n.vijaychouhan.in/mcp/629398d8-99a5-492c-8c47-72162100859e",
+        "serverTransport": "httpStreamable",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        1008,
+        224
+      ],
+      "id": "50deee40-e5fc-455e-822b-aaa0003e874d",
+      "name": "MCP Client1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xRBuhsz4bSR8FdRv",
+          "name": "X-Figma-Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "629398d8-99a5-492c-8c47-72162100859e"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        -224
+      ],
+      "id": "2cfc2229-7758-4f37-9a50-67a1352ffc10",
+      "name": "MCP Server Trigger",
+      "webhookId": "629398d8-99a5-492c-8c47-72162100859e"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        2112,
+        384
+      ],
+      "id": "c6ad3d85-6026-4d36-89b2-cfdb27e1a88f",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "path": "c01c7a71-9b1e-41ac-b7c6-5c2515d69155"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -208
+      ],
+      "id": "4c9c5a6b-19ab-4200-92e3-0689430e4401",
+      "name": "MCP Server Trigger1",
+      "webhookId": "c01c7a71-9b1e-41ac-b7c6-5c2515d69155"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n.vijaychouhan.in/mcp-test/c01c7a71-9b1e-41ac-b7c6-5c2515d69155",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        352,
+        144
+      ],
+      "id": "d2672119-552e-4405-b898-5ab6db159512",
+      "name": "MCP Client2"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get figma file data",
+        "url": "https://api.figma.com/v1/files/DCtpcmyD1bqlbL84ovghtg",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1184,
+        80
+      ],
+      "id": "104e9e7f-923a-4186-8b7f-aab97e88f964",
+      "name": "file-",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xRBuhsz4bSR8FdRv",
+          "name": "X-Figma-Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get figma image data",
+        "url": "https://api.figma.com/v1/images/DCtpcmyD1bqlbL84ovghtg?ids=1:2&format=png&scale=2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        80
+      ],
+      "id": "ee5bb287-4b0e-4f63-b1a8-e4acca291042",
+      "name": "image",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xRBuhsz4bSR8FdRv",
+          "name": "X-Figma-Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "teamId": "1061982571504945829",
+        "triggerOn": "fileComment"
+      },
+      "type": "n8n-nodes-base.figmaTrigger",
+      "typeVersion": 1,
+      "position": [
+        736,
+        896
+      ],
+      "id": "45c3c224-fc35-4de1-81c5-af9476533f7d",
+      "name": "Figma Trigger (Beta)",
+      "webhookId": "2f448133-db42-4daf-83b8-a8e60a129957",
+      "credentials": {
+        "figmaApi": {
+          "id": "GIgLoRU6e9u4E8yk",
+          "name": "Figma 2016"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Human: The following text is a comment from Figma.  \nPlease write a helpful, concise suggestion to improve or address the comment.  \nIf the Telegram message indicates approval, include a polite approval reply as well.  \n\nFigma Comment: {{ $json.comment[0].text }}\n",
+        "options": {
+          "systemMessage": "System: You are a helpful AI assistant.  \nYour task is to read Figma comments and provide clear, constructive suggestions in reply.  \nWhen a message is approved via Telegram, respond to the corresponding Figma comment with the prepared suggestion and a polite approval note.  \nMaintain a professional and friendly tone in all responses.  \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        896
+      ],
+      "id": "788adebe-f6b8-4811-b793-ee29e19634b4",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        976,
+        1120
+      ],
+      "id": "03a54799-76d8-4b99-9192-ead63fa35837",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.comment_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1168,
+        1120
+      ],
+      "id": "491d502b-4ad4-4217-bf4d-9df36a5a9ce5",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTool",
+      "typeVersion": 1.2,
+      "position": [
+        2400,
+        1232
+      ],
+      "id": "479535d2-24bc-4460-bfd3-569cbc1ac710",
+      "name": "Send a text message in Telegram",
+      "webhookId": "94f6b9a4-61e6-412f-83ea-cbe958721482",
+      "credentials": {
+        "telegramApi": {
+          "id": "6ljkpEhJhFTPK5c0",
+          "name": "Portfolio Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5762405784",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        896
+      ],
+      "id": "f6644c17-8b2b-49a3-8643-0788eb470d3e",
+      "name": "Send a text message",
+      "webhookId": "112f38a2-54d7-4c1c-a027-5900e70707d9",
+      "credentials": {
+        "telegramApi": {
+          "id": "Vnn2c31KSgwqxsWx",
+          "name": "Invoice Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1856,
+        1216
+      ],
+      "id": "e3b9e996-d910-4f0a-9eae-40026af76306",
+      "name": "Telegram Trigger",
+      "webhookId": "b290ab2a-1541-474f-bdb0-0880a6eaa6b9",
+      "credentials": {
+        "telegramApi": {
+          "id": "6ljkpEhJhFTPK5c0",
+          "name": "Portfolio Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $json.result.chat.id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1680,
+        960
+      ],
+      "id": "cc9a7127-87c4-4b7c-ad3c-4f7c508b8337",
+      "name": "Answer Query a callback",
+      "webhookId": "a8a2ecba-980e-4f60-a98d-1a7060e7ffa7",
+      "credentials": {
+        "telegramApi": {
+          "id": "Vnn2c31KSgwqxsWx",
+          "name": "Invoice Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client1": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "HTTP Request1": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "file-": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "image": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Figma Trigger (Beta)": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message in Telegram": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8db9d25c-f740-45f2-90a2-6167820ba88a",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-07T14:59:07.246Z",
+      "updatedAt": "2025-10-07T14:59:07.246Z",
+      "role": "workflow:owner",
+      "workflowId": "UwdbF5OknHCjVdav",
+      "projectId": "GOCt3JGfQ1Lags9f"
+    }
+  ],
+  "tags": []
+}
