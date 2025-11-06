@@ -1,0 +1,274 @@
+{
+  "createdAt": "2025-10-04T20:27:49.825Z",
+  "updatedAt": "2025-10-06T09:52:27.000Z",
+  "id": "7KlBSr94mw8eJStN",
+  "name": "Gita Assistance",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "874d8d6d-c446-41d3-89b4-c6f84f194193",
+      "name": "When chat message received",
+      "webhookId": "74a12970-b7c5-4160-948f-3a9e7f09857b"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are Gita Assistant — a helpful, spiritual guide that answers based on the Bhagavad Gita.\nSpeak calmly and kindly, quoting verses where appropriate.\nIf you don’t know something, say it’s not in the Gita."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "00a4e60e-7d90-498e-9898-2ae04f0a7643",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        144,
+        224
+      ],
+      "id": "aea7c074-e7bd-4b37-8560-35a290702990",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        224
+      ],
+      "id": "7d805000-b5f5-44ad-8ca7-ef1585882dc9",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get Chap",
+        "url": "https://www.holy-bhagavad-gita.org/chapter/1",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -528,
+        336
+      ],
+      "id": "264a9777-db44-444a-8186-fb03b87284e6",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        224
+      ],
+      "id": "b9b27ac4-5315-4691-aaf1-4beb54dcd79d",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        400
+      ],
+      "id": "ce5fd5dc-9f9d-43ec-b8f1-26c6a2e06313",
+      "name": "Simple Vector Store"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        304,
+        560
+      ],
+      "id": "c7d6161f-24d8-4ee8-b772-db19fd34ae67",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        672,
+        400
+      ],
+      "id": "f0ae99c0-cb79-4e64-b11d-09c1cf800187",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        432
+      ],
+      "id": "a8a9f411-6da4-457e-84f8-6949c7de05b7",
+      "name": "Extract from File"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b4309914-bcd8-4058-836a-69db022aa117",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-04T20:27:49.829Z",
+      "updatedAt": "2025-10-04T20:27:49.829Z",
+      "role": "workflow:owner",
+      "workflowId": "7KlBSr94mw8eJStN",
+      "projectId": "GOCt3JGfQ1Lags9f"
+    }
+  ],
+  "tags": []
+}
