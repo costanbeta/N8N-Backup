@@ -1,0 +1,219 @@
+{
+  "createdAt": "2025-10-06T14:34:52.848Z",
+  "updatedAt": "2025-11-02T13:09:03.000Z",
+  "id": "jJBhGTdDKrW7dnR1",
+  "name": "Portfolio assitant",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a sophisticated portfolio analysis assistant. Your primary function is to provide users with a detailed and insightful analysis of their stock and mutual fund portfolios. To achieve this, you will leverage a suite of tools to gather, process, and present information in a clear and helpful manner.\nYour operational workflow is as follows:\nInitial Portfolio Retrieval: Begin by accessing the user's investment data using the \"Get row(s) in sheet\" tool. This Google Sheet is the primary source for the list of stocks and mutual funds in their portfolio.\nReal-Time Data Enhancement: For each asset identified in the portfolio, use the designated HTTP Request tools to fetch current, detailed information. This ensures your analysis is based on the most up-to-date data available.\nIn-Depth Knowledge Retrieval: Utilize the Simple Vector Store to access a broader knowledge base. This tool will provide additional context, definitions, and answers to more general financial questions or concepts related to the user's portfolio, making your analysis more comprehensive.\nSynthesize and Analyze: Combine the data from the Google Sheet, the real-time information from the HTTP requests, and the contextual knowledge from the Simple Vector Store to conduct a thorough analysis of the portfolio.\nDeliver Actionable Insights: Present your findings to the user in a clear, concise, and easily understandable format. Be prepared to answer follow-up questions, offering deeper insights into asset performance, allocation, and other relevant portfolio metrics. Your goal is to empower the user with a comprehensive understanding of their investments."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -464,
+        -160
+      ],
+      "id": "7b1752c0-90d9-4b70-bea7-49298ff27208",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.message_id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        48
+      ],
+      "id": "caff2ee8-688d-4701-a590-96268d1ca696",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        48
+      ],
+      "id": "84549568-ce62-4366-b473-779b2dc1ec14",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -688,
+        -160
+      ],
+      "id": "c04c6912-445a-471c-b90e-df3d118839ac",
+      "name": "Telegram Trigger",
+      "webhookId": "54457969-33c4-4f5d-a9cd-51ac2e1acaf7",
+      "credentials": {
+        "telegramApi": {
+          "id": "6ljkpEhJhFTPK5c0",
+          "name": "Portfolio Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5762405784",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -112,
+        -160
+      ],
+      "id": "cb542b7a-07c2-4121-a657-d598d51f2e7c",
+      "name": "Send a text message",
+      "webhookId": "efe9b9b9-edd1-4099-b57a-c2f9b7a350da",
+      "credentials": {
+        "telegramApi": {
+          "id": "6ljkpEhJhFTPK5c0",
+          "name": "Portfolio Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get row(s) in sheet in Google Sheets",
+        "documentId": {
+          "__rl": true,
+          "value": "1Fug7a9aq6_jhlyX-0ixHwsVVFLCO46j--Dsm1EHgusQ",
+          "mode": "list",
+          "cachedResultName": "Portfolio",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Fug7a9aq6_jhlyX-0ixHwsVVFLCO46j--Dsm1EHgusQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Holding",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Fug7a9aq6_jhlyX-0ixHwsVVFLCO46j--Dsm1EHgusQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -288,
+        32
+      ],
+      "id": "0ac57b3c-673f-4a94-b755-af10eae11f8e",
+      "name": "Add stock and mutual fund Holding detail",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OBJF3frqzx5gvvbX",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add stock and mutual fund Holding detail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ce298858-d19b-4cef-8baf-35ef13c4a4ed",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-06T14:34:52.851Z",
+      "updatedAt": "2025-10-06T14:34:52.851Z",
+      "role": "workflow:owner",
+      "workflowId": "jJBhGTdDKrW7dnR1",
+      "projectId": "GOCt3JGfQ1Lags9f"
+    }
+  ],
+  "tags": []
+}
