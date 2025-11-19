@@ -1,0 +1,143 @@
+{
+  "createdAt": "2025-10-04T16:25:45.042Z",
+  "updatedAt": "2025-10-04T17:46:14.000Z",
+  "id": "PQiucpAOphNUU96W",
+  "name": "Generate image",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -496,
+        0
+      ],
+      "id": "935d4662-836b-4738-ace7-6d1748fe6b4f",
+      "name": "Telegram Trigger",
+      "webhookId": "183f2646-5f4e-4d66-8d90-654cfccbcb72",
+      "credentials": {
+        "telegramApi": {
+          "id": "c7Wd3wkthaODi6Zt",
+          "name": "Image generate bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash-exp-image-generation",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash-exp-image-generation"
+        },
+        "prompt": "=Create image url {{ $json.message.text }}",
+        "options": {
+          "binaryPropertyOutput": "data"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        0
+      ],
+      "id": "3eb68cc8-1889-4a50-bfa6-e0877a13eba9",
+      "name": "Generate an image1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "maJAaufS1Bpg5Eub",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "chatId": "@Hh"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -496,
+        1168
+      ],
+      "id": "2c6aefcf-9d46-497c-9211-ac51b5b401d5",
+      "name": "Get a chat",
+      "webhookId": "182cbebd-8596-4a50-a031-6894def76b8e",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "e72565f8-822a-4dba-86f4-6e311b9bfa90",
+      "name": "Send a photo message",
+      "webhookId": "65145e23-7363-42fd-8cb1-bd96bfaf1b08",
+      "credentials": {
+        "telegramApi": {
+          "id": "c7Wd3wkthaODi6Zt",
+          "name": "Image generate bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate an image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image1": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "0b96aaae-7f3f-44f0-bfc1-ae86102d9762",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-04T16:25:45.047Z",
+      "updatedAt": "2025-10-04T16:25:45.047Z",
+      "role": "workflow:owner",
+      "workflowId": "PQiucpAOphNUU96W",
+      "projectId": "GOCt3JGfQ1Lags9f"
+    }
+  ],
+  "tags": []
+}
